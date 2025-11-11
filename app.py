@@ -5,8 +5,8 @@ from datetime import date, datetime
 from io import BytesIO
 from typing import List, Optional, Tuple, Dict
 
-st.set_page_config(page_title="GPIRS Shortage Report Converter by MHILL17", layout="wide")
-st.title("📄 GPIRS Shortage Report Converter (.TXT to .XLSX) by MHILL17")
+st.set_page_config(page_title="GPIRS Shortage Report Converter by M. HILL", layout="wide")
+st.title("📄 GPIRS Shortage Report Converter (.TXT to .XLSX) by M. HILL")
 
 # ------------------------------- Utilities ---------------------------------- #
 
@@ -215,6 +215,6 @@ else:
     st.info("Upload one or more **.txt** files to begin. (if any errors occur please contact mhill17@jaguarlandrover.com)")
     st.markdown(
     "<p style='text-align:center; color:gray; font-size:0.85rem; margin-top:40px;'>"
-    "Built by <b>MHILL17</b> on behalf of <b>B523STORES_GRP</b>"
+    "Built by <b>M. HILL17</b> - <b>NO ORGANISATIONAL DATA IS SHARED</b>"
     "</p>",
     unsafe_allow_html=True)
