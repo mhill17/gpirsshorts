@@ -212,9 +212,9 @@ if uploaded_files:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 else:
-    st.info("Upload one or more **.txt** files to begin. (if any errors occur please contact mhill17@jaguarlandrover.com)")
+    st.info("Upload one or more **.txt** files to begin. (if any errors occur please contact m. hill)")
     st.markdown(
     "<p style='text-align:center; color:gray; font-size:0.85rem; margin-top:40px;'>"
-    "Built by <b>M. HILL17</b> - <b>NO ORGANISATIONAL DATA IS SHARED</b>"
+    "Built by <b>M. HILL</b> - <b>NO ORGANISATIONAL DATA IS SHARED</b>"
     "</p>",
     unsafe_allow_html=True)
