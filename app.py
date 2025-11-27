@@ -5,8 +5,8 @@ from datetime import date, datetime
 from io import BytesIO
 from typing import List, Optional, Tuple, Dict
 
-st.set_page_config(page_title="GPIRS Shortage Report Converter by M. HILL", layout="wide")
-st.title("📄 GPIRS Shortage Report Converter (.TXT to .XLSX) by M. HILL")
+st.set_page_config(page_title="GPIRS Shortage Report Converter", layout="wide")
+st.title("📄 GPIRS Shortage Report Converter (.TXT to .XLSX)")
 
 # ------------------------------- Utilities ---------------------------------- #
 
@@ -212,9 +212,9 @@ if uploaded_files:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 else:
-    st.info("Upload one or more **.txt** files to begin. (if any errors occur please contact m. hill)")
+    st.info("Upload one or more **.txt** files to begin.")
     st.markdown(
     "<p style='text-align:center; color:gray; font-size:0.85rem; margin-top:40px;'>"
-    "Built by <b>M. HILL</b> - <b>NO ORGANISATIONAL DATA IS SHARED</b>"
+    "<b>NO ORGANISATIONAL DATA IS SHARED</b>"
     "</p>",
     unsafe_allow_html=True)
