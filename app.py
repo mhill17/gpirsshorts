@@ -47,13 +47,11 @@ def extract_received_or_created_date(txt: str) -> str:
 def find_marker_idx(parts2: List[str]) -> Optional[int]:
     """
     Return index of the first marker token ('I' or 'S') that is followed by 'V'.
-    This fixes '... I V ...' and '... S V ...' variants.
+    Scans left-to-right so whichever marker appears first is used.
     """
-    for tok in ("I", "S"):
-        if tok in parts2:
-            idx = parts2.index(tok)
-            if idx + 1 < len(parts2) and parts2[idx + 1] == "V":
-                return idx
+    for idx, tok in enumerate(parts2):
+        if tok in ("I", "S") and idx + 1 < len(parts2) and parts2[idx + 1] == "V":
+            return idx
     return None
 
 # ------------------------------- Parsing ------------------------------------ #
@@ -87,9 +85,9 @@ def parse_one_text(txt_content: str, override_date: Optional[str]) -> Tuple[pd.D
                         tams_idx = marker_idx + 2
                         tams = parts2[tams_idx] if tams_idx < len(parts2) else ""
 
-                        # Additional Info: take last non-dot token
+                        # Additional Info: all non-dot tokens after TAMS
                         tail = [t for t in parts2[tams_idx + 1:] if t != "."]
-                        additional_info = tail[-1] if tail else ""
+                        additional_info = " ".join(tail)
 
                         entry = {
                             "Line": parts1[0],
@@ -103,7 +101,7 @@ def parse_one_text(txt_content: str, override_date: Optional[str]) -> Tuple[pd.D
                             "Unit Price ($)": parts1[-2],
                             "Total Price": parts1[-1],
                             "TAMS": tams,
-                            "Ticket Number": parts2[0],         # second-from-last (reordered below)
+                            "Ticket Number": f"z{parts2[0]}" if parts2[0].isdigit() and len(parts2[0]) == 6 else parts2[0],
                             "Additional Info": additional_info, # last
                             "Source Doc": doc_no or "",
                         }
@@ -154,12 +152,16 @@ if uploaded_files:
 
     for f in uploaded_files:
         raw = f.read()
+        txt = None
         for enc in ("utf-8-sig", "utf-8", "latin-1"):
             try:
                 txt = raw.decode(enc)
                 break
             except UnicodeDecodeError:
                 continue
+        if txt is None:
+            st.error(f"Could not decode **{f.name}** — skipping.")
+            continue
 
         override = None if use_header_date else manual_date_value.strftime("%Y-%m-%d")
         detail_df, meta = parse_one_text(txt, override_date=override)
@@ -190,7 +192,7 @@ if uploaded_files:
 
     # Table only (Summary removed)
     st.subheader("😎 Here is your data! You can copy direct from here and paste into the Shortages Spreadsheet!")
-    st.dataframe(details, width="stretch")
+    st.dataframe(details, use_container_width=True)
 
     # ----------------------------- Excel Export ------------------------------ #
     output = BytesIO()
@@ -202,7 +204,7 @@ if uploaded_files:
     unique_docs = sorted(set(doc_badges))
     doc_part = unique_docs[0] if len(unique_docs) == 1 else "MULTI"
     date_part = (manual_date_value.strftime("%Y-%m-%d") if not use_header_date
-                 else (",".join(sorted(set(meta_dates))) if meta_dates else date.today().strftime("%Y-%m-%d")))
+                 else ("_".join(sorted(set(meta_dates))) if meta_dates else date.today().strftime("%Y-%m-%d")))
     filename = f"shortage_report_{doc_part}_{date_part}.xlsx"
 
     st.download_button(
